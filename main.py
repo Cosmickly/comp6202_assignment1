@@ -1,4 +1,5 @@
 import random
+import matplotlib.pyplot as plt
 
 pop_size = 500
 g_length = 28
@@ -81,7 +82,7 @@ def ga_no_crossover(population):
         generations += 1
         if fitness_function(c) >= 1:
             print(f"Generations: {generations}")
-            return population
+            return generations
 
 
 def crossover(p1, p2):
@@ -125,13 +126,31 @@ def ga_crossover(population):
         generations += 1
         if fitness_function(c) >= 1:
             print(f"Generations: {generations}")
-            return population
+            return generations
 
 
 if __name__ == '__main__':
-    pop = list(random_genome(g_length) for _ in range(pop_size))
+    # pop = list(random_genome(g_length) for _ in range(pop_size))
 
-    pop = ga_crossover(pop)  # gens = 9730 - 23000
-    # pop = ga_no_crossover(pop)  # gens = 50000 - 90000
-    pp(pop)
+    test_sizes = range(1, 20)
+    xticks = range(len(test_sizes))
+    plt.xticks(xticks, test_sizes)
+    plt.xlabel("Population in 100s")
+    plt.ylabel("Generations")
 
+    results = []
+    for i in range(len(test_sizes)):
+        pop = list(random_genome(g_length) for _ in range(test_sizes[i] * 100))
+        results.append(ga_no_crossover(pop))
+
+    plt.plot(xticks, results)
+
+    results = []
+    for i in range(len(test_sizes)):
+        pop = list(random_genome(g_length) for _ in range(test_sizes[i] * 100))
+        results.append(ga_crossover(pop))
+
+    plt.plot(xticks, results)
+
+
+    plt.show()
