@@ -54,34 +54,33 @@ def hill_climber(genome):
 
 def ga_no_crossover(population):
     genomes = {}
+    generations = 0
     while True:
-        sample = random.sample(population, 2)
-        a1, b1 = sample[0], sample[1]
+        sample = random.sample(population, 2)  # take 2 members
+        a, b = sample[0], sample[1]
 
-        if a1 not in genomes:
-            genomes[a1] = fitness_function(a1)
+        for x in sample:
+            if x not in genomes:
+                genomes[x] = fitness_function(x)
 
-        if b1 not in genomes:
-            genomes[b1] = fitness_function(b1)
-
-        p1 = a1 if genomes[a1] > genomes[b1] else b1  # mutate member with higher fit
+        p1 = a if genomes[a] > genomes[b] else b  # mutate member with higher fit
         c = mutate_genome(p1)
 
-        sample = random.sample(range(len(population)), 2)
-        a2, b2 = sample[0], sample[1]
+        sample = random.sample(range(len(population)), 2)  # take another two members
+        a, b = sample[0], sample[1]
 
-        if population[a2] not in genomes:
-            genomes[population[a2]] = fitness_function(population[a2])
+        for x in sample:
+            if population[x] not in genomes:
+                genomes[population[x]] = fitness_function(population[x])
 
-        if population[b2] not in genomes:
-            genomes[population[b2]] = fitness_function(population[b2])
-
-        if genomes[population[a2]] > genomes[population[b2]]:  # replace lower member w/ child
-            population[b2] = c
+        if genomes[population[a]] > genomes[population[b]]:  # replace lower member w/ child
+            population[b] = c
         else:
-            population[a2] = c
+            population[a] = c
 
+        generations += 1
         if fitness_function(c) >= 1:
+            print(f"Generations: {generations}")
             return population
 
 
@@ -97,24 +96,42 @@ def crossover(p1, p2):
 
 def ga_crossover(population):
     genomes = {}
+    generations = 0
     while True:
-        sample = random.sample(population, 2)
-        a1, b1 = sample[0], sample[1]
+        sample = random.sample(population, 4)  # take four members
+        a1, b1, a2, b2 = sample[0], sample[1], sample[2], sample[3]
 
+        for x in sample:
+            if x not in genomes:
+                genomes[x] = fitness_function(x)
+
+        p1 = a1 if genomes[a1] > genomes[b1] else b1  # highest fitness for each
+        p2 = a2 if genomes[a2] > genomes[b2] else b2
+
+        c = mutate_genome(crossover(p1, p2))
+
+        sample = random.sample(range(len(population)), 2)  # take another two members
+        a, b = sample[0], sample[1]
+
+        for x in sample:
+            if population[x] not in genomes:
+                genomes[population[x]] = fitness_function(population[x])
+
+        if genomes[population[a]] > genomes[population[b]]:  # replace lower member w/ child
+            population[b] = c
+        else:
+            population[a] = c
+
+        generations += 1
+        if fitness_function(c) >= 1:
+            print(f"Generations: {generations}")
+            return population
 
 
 if __name__ == '__main__':
     pop = list(random_genome(g_length) for _ in range(pop_size))
-    # pp(pop)
-    # print(fitness_function(pop[0]))
-    # print(pop[0])
-    # print(mutate_genome(pop[0]))
-    # print(hill_climber(pop[0]))
 
-    pop = ga_no_crossover(pop)
-    # print(template)
+    pop = ga_crossover(pop)  # gens = 9730 - 23000
+    # pop = ga_no_crossover(pop)  # gens = 50000 - 90000
     pp(pop)
 
-    # print(pop[0])
-    # print(pop[1])
-    # print(crossover(pop[0], pop[1]))
