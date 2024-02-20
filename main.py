@@ -3,10 +3,18 @@ import random
 pop_size = 500
 g_length = 28
 m_rate = 1 / g_length
-tornament_size = 2
+tournament_size = 2
 
-template = list("methinks it is like a weasel")
+template = "methinks it is like a weasel"
 
+
+def convert(genome):
+    return "".join(genome)
+
+
+def pp(population):
+    for p in population:
+        print(p)
 
 def random_genome(length):
     return "".join((chr(random.randint(32, 126)) for _ in range(length)))
@@ -47,8 +55,8 @@ def hill_climber(genome):
 def ga_no_crossover(population):
     genomes = {}
     while True:
-        a1 = random.choice(population)  # take 2 random members
-        b1 = random.choice(population)
+        sample = random.sample(population, 2)
+        a1, b1 = sample[0], sample[1]
 
         if a1 not in genomes:
             genomes[a1] = fitness_function(a1)
@@ -59,8 +67,8 @@ def ga_no_crossover(population):
         p1 = a1 if genomes[a1] > genomes[b1] else b1  # mutate member with higher fit
         c = mutate_genome(p1)
 
-        a2 = random.randrange(0, pop_size)  # take another 2 members
-        b2 = random.randrange(0, pop_size)
+        sample = random.sample(range(len(population)), 2)
+        a2, b2 = sample[0], sample[1]
 
         if population[a2] not in genomes:
             genomes[population[a2]] = fitness_function(population[a2])
@@ -77,13 +85,22 @@ def ga_no_crossover(population):
             return population
 
 
-def convert(genome):
-    return "".join(genome)
+def crossover(p1, p2):
+    c = []
+    for i in range(len(p1)):
+        if random.random() > 0.5:
+            c.append(p1[i])
+        else:
+            c.append(p2[i])
+    return "".join(c)
 
 
-def pp(population):
-    for p in population:
-        print(p)
+def ga_crossover(population):
+    genomes = {}
+    while True:
+        sample = random.sample(population, 2)
+        a1, b1 = sample[0], sample[1]
+
 
 
 if __name__ == '__main__':
@@ -94,7 +111,10 @@ if __name__ == '__main__':
     # print(mutate_genome(pop[0]))
     # print(hill_climber(pop[0]))
 
-
     pop = ga_no_crossover(pop)
-    print(template)
+    # print(template)
     pp(pop)
+
+    # print(pop[0])
+    # print(pop[1])
+    # print(crossover(pop[0], pop[1]))
