@@ -3,5 +3,5 @@
   <component name="Black">
     <option name="sdkName" value="handwriting" />
   </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="comp6202" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="my-pypy-env" project-jdk-type="Python SDK" />
 </project>
